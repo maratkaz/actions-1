@@ -16,15 +16,20 @@ jobs:
     - name: Executing shell script
       run: cowsay -f dragon "Run for cover, I'm a DRAGON....RAWR" >> dragon.txt
 
-    - name: Sleep
-      run: sleep 30
+    - name: Upload file
+      uses: actions/upload-artifact@v4
+      with:
+        name: dragon-file
+        path: dragon.txt
 
   test_job_2:
     needs: build_job_1
     runs-on: ubuntu-latest
     steps:
-    - name: Sleep
-      run: sleep 10
+    - name: Download file
+      uses: actions/download-artifact@v4
+      with:
+        name: dragon-file
 
     - name: Test file
       run: grep -i "dragon" dragon.txt
@@ -33,6 +38,11 @@ jobs:
     needs: test_job_2
     runs-on: ubuntu-latest
     steps:
+    - name: Download file
+      uses: actions/download-artifact@v4
+      with:
+        name: dragon-file
+        
     - name: Read file
       run: cat dragon.txt
 
